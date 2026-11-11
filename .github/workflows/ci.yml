@@ -31,3 +31,4 @@ jobs:
     - name: Bashorat pipeline'ini tekshirish
       run: |
         python predict.py --model "galaxy a15"
+
