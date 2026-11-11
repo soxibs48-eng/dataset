@@ -14,3 +14,4 @@ EXPOSE 8000 5000
 
 # Veb-serverni ishga tushirish
 CMD ["python", "server.py"]
+
