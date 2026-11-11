@@ -1,110 +1,96 @@
-# Mobile Price Classification Dataset (O'zbek / Русский / English)
+# 📱 SmartPrice AI — Mobil Telefonlar Narxini Aniqlash Tizimi
 
-> **Kutubxonalar:** `Scikit-learn`, `Pandas`, `kagglehub`  
-> **Dataset manbasi:** [Kaggle - Mobile Price Classification Dataset](https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification) (`iabhishekofficial/mobile-price-classification`)
-
-Ushbu loyiha Kaggle'dagi mashhur **"Mobile Price Classification"** ma'lumotlar to'plamini yuklab olib, **Pandas** va **Scikit-learn** kutubxonalari yordamida qayta ishlaydi, 3 ta tilda (**O'zbek**, **Rus**, **Ingliz**) tayyorlaydi hamda telefonlarning texnik parametrlari (RAM, batareya, kamera) asosida narx toifasini **96.5% aniqlikda** tasniflovchi Machine Learning modelini taqdim etadi.
-
----
-
-## ⚡ Bitta Buyruq Bilan Butun Loyihani Ishga Tushirish
-
-```bash
-python main.py
-```
-*(Ushbu buyruq datasetni yuklaydi, Pandas orqali tahlil qiladi, Scikit-learn orqali modellarni o'qitadi, yangi telefonlarni 3 tilda tasniflaydi va test to'plami bashoratlarini saqlaydi).*
-
+> **Kutubxonalar:** `Scikit-learn`, `Pandas`, `kagglehub`, `joblib`  
+> **Dataset manbasi:** [Kaggle - Mobile Price Classification](https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification) (`iabhishekofficial/mobile-price-classification`)  
+> **Tillar:** 🇺🇿 O'zbekcha, 🇷🇺 Русский, 🇬🇧 English  
+> **AI Modeli Aniqligi:** **$96.50\%$** (Logistic Regression + StandardScaler)  
+> **Jonli Valyuta Kursi:** O'zbekiston Respublikasi Markaziy Banki (**CBU API**) bilan integratsiya qilingan
 
 ---
 
-## 📁 Loyiha Strukturasi (Project Structure)
+## 🌟 Asosiy Imkoniyatlar
+
+1. **Aniq Narx Hisoblash:** Har bir telefonning texnik parametrlariga qarab bozor narxini so'mda va dollarda aniq hisoblaydi.
+2. **Jonli Dollar Kursi (API):** Markaziy Bankning rasmiy API'sidan real-vaqtda kursni oladi va telefon narxlarini doimiy yangilab turadi.
+3. **Mashhur Telefon Modellari Katalogi:** iPhone 15 Pro Max, Galaxy S24 Ultra, Redmi Note 13, Galaxy A15 kabi 15+ mashhur model parametrlari tayyor kiritilgan.
+4. **Nasiya / Muddatli To'lov Kalkulyatori:** 3, 6 va 12 oylik bo'lib to'lash rejasi va oylik summalarni ko'rsatadi.
+5. **Afzallik va Kamchiliklar Tahlili (Pros & Cons):** Batareya chidamliligi, RAM tezligi va xotira yetarliligi bo'yicha sun'iy intellekt xulosasi.
+6. **Oddiy va Pro Rejim:** Oddiy odamlar uchun 4 ta oson savol, mutaxassislar uchun to'liq texnik mikrosxema slayderlari.
+7. **3 Tilda Ishlash:** O'zbekcha, Ruscha va Inglizcha to'liq lokalizatsiya.
+
+---
+
+## 📁 Loyiha Tuzilishi
 
 ```text
 dataset/
 │
-├── original/                   # Kaggle'dan olingan asl fayllar
-│   ├── train.csv
-│   └── test.csv
+├── index.html                   # Interaktiv zamonaviy AI veb-sayti (Jonli kurs + Model katalogi)
+├── server.py                    # Mahalliy veb-server (http://localhost:8000)
+├── main.py                      # Butun loyihani ishga tushiruvchi yagona Python pipeline
+├── predict.py                   # Jonli CBU kursi va model katalogiga ega CLI dastur
+├── predict_test.py              # 1000 ta test telefoni narxini bashorat qiluvchi skript
+├── train_model.py               # Scikit-learn ML modellarini o'qitish va baholash
+├── test_suite.py                # 6 ta avtomatlashtirilgan unit testlar
+├── push_to_github.bat           # 1-klikda GitHub'ga yuklash (Windows script)
 │
-├── uz/                         # O'zbek tili (Uzbek language)
-│   ├── train_uz.csv            # ML uchun tayyor (raqamli ustunlar)
-│   ├── test_uz.csv
-│   ├── train_uz_tavsifli.csv   # EDA va vizualizatsiya uchun tavsifli
-│   └── README_UZ.md            # O'zbekcha to'liq qo'llanma
-│
-├── ru/                         # Rus tili (Русский язык)
-│   ├── train_ru.csv            # Готов для ML (числовые значения)
-│   ├── test_ru.csv
-│   ├── train_ru_opisanie.csv   # С текстовыми описаниями для EDA
-│   └── README_RU.md            # Подробная документация на русском
-│
-├── en/                         # Ingliz tili (English language)
-│   ├── train_en.csv            # Numerical format for ML models
-│   ├── test_en.csv
-│   ├── train_en_labeled.csv    # Labeled format for EDA
-│   └── README_EN.md            # English documentation
-│
-├── metadata_features.json      # Barcha ustunlarning 3 tildagi lug'ati (JSON formatda)
-├── prepare_dataset.py          # Datasetni yuklab oluvchi va qayta ishlovchi script
-└── README.md                   # Asosiy ma'lumotnoma
+├── uz/                          # O'zbekcha datasetlar (train_uz.csv, test_uz.csv, tavsifli.csv, README_UZ.md)
+├── ru/                          # Ruscha datasetlar (train_ru.csv, test_ru.csv, opisanie.csv, README_RU.md)
+├── en/                          # Inglizcha datasetlar (train_en.csv, test_en.csv, labeled.csv, README_EN.md)
+├── original/                    # Kaggle'dagi asl fayllar (train.csv, test.csv)
+├── models/                      # Saqlangan model (mobile_price_model.joblib, model_metrics.json, model_web.json)
+├── predictions/                 # Kaggle submission va 1000 ta test natijalari
+└── .github/workflows/ci.yml     # GitHub Actions avtomatik CI/CD testlari
 ```
 
 ---
 
-## 📊 Ustunlar Taqqoslash Jadvali (Column Comparison Table)
+## ⚡ Qanday Ishga Tushirish Mumkin?
 
-| Asl nomi (EN) | O'zbekcha (UZ) | Русский (RU) | Qiymatlar / Birlik |
-| :--- | :--- | :--- | :--- |
-| `battery_power` | `akkumulyator_quvvati` | `emkost_batarei_mach` | mAh (Akkumulyator quvvati) |
-| `blue` | `bluetooth` | `bluetooth` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| `clock_speed` | `protsessor_tezligi` | `taktovaya_chastota_ggts` | GHz (Chastota) |
-| `dual_sim` | `ikkita_sim` | `dve_sim_karty` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| `fc` | `old_kamera_mp` | `front_kamera_mp` | MP (Old kamera megapikseli) |
-| `four_g` | `tort_g` | `four_g` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| `int_memory` | `ichki_xotira_gb` | `vstroennaya_pamyat_gb` | GB (Ichki xotira) |
-| `m_dep` | `qalinligi_sm` | `tolschina_sm` | sm (Telefon qalinligi) |
-| `mobile_wt` | `telefon_vazni_gr` | `ves_telefona_gr` | g (Telefon og'irligi) |
-| `n_cores` | `yadro_soni` | `kolichestvo_yader` | CPU yadrolar soni |
-| `pc` | `asosiy_kamera_mp` | `osnovnaya_kamera_mp` | MP (Asosiy kamera) |
-| `px_height` | `piksel_balandligi` | `vysota_razresheniya_px` | px (Ekran balandligi pikselda) |
-| `px_width` | `piksel_kengligi` | `shirina_razresheniya_px` | px (Ekran kengligi pikselda) |
-| `ram` | `ram_mb` | `ram_mb` | MB (Operativ xotira) |
-| `sc_h` | `ekran_balandligi_sm` | `vysota_ekrana_sm` | sm (Ekran balandligi) |
-| `sc_w` | `ekran_kengligi_sm` | `shirina_ekrana_sm` | sm (Ekran kengligi) |
-| `talk_time` | `gaplashish_vaqti_soat` | `vremya_razgovora_ch` | Soat (So'zlashuv vaqti) |
-| `three_g` | `uch_g` | `three_g` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| `touch_screen` | `sensorli_ekran` | `sensornyy_ekran` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| `wifi` | `wifi` | `wifi` | 0 = Yo'q / Нет / No, 1 = Bor / Есть / Yes |
-| **`price_range`** | **`narx_toifasi`** | **`diapazon_cen`** | **0: Arzon, 1: O'rtacha, 2: Qimmat, 3: Juda qimmat** |
+### 1. Veb-saytni ochish:
+- Brauzerda ochish: 👉 [**http://localhost:8000**](http://localhost:8000)
+- Yoki [`index.html`](index.html) faylini to'g'ridan-to'g'ri brauzerda oching.
+- Veb-serverni ishga tushirish uchun:
+  ```bash
+  python server.py
+  ```
+
+### 2. Terminal (CLI) orqali telefon narxini bilish:
+```bash
+# Samsung Galaxy A15 narxi:
+python predict.py --model "galaxy a15"
+
+# iPhone 15 Pro Max narxi:
+python predict.py --model "iphone 15 pro max"
+
+# O'z parametrlaringiz bo'yicha:
+python predict.py --ram 3800 --battery 5000 --camera 50 --storage 128
+```
+
+### 3. Butun loyihani qayta o'qitish:
+```bash
+python main.py
+```
+
+### 4. Testlarni tekshirish:
+```bash
+python test_suite.py
+```
 
 ---
 
-## 🚀 Foydalanish (Qo'llanma)
+## 🚀 GitHub'ga Yuklash (Push):
 
-### 1. Parametrlarga qarab narx toifasini aniqlash (CLI):
-Terminal orqali telefon parametrlarini kiritib narx toifasini bilish:
+1. **Avtomatik (Windows):** [`push_to_github.bat`](push_to_github.bat) faylini oching va GitHub havolangizni kiriting.
+2. **Qo'lda buyruq orqali:**
+   ```bash
+   git remote add origin https://github.com/<USERNAME>/<REPO_NOMI>.git
+   git branch -M main
+   git push -u origin main
+   ```
 
-```bash
-# O'zbek tilida:
-python predict.py --lang uz --ram 3800 --battery 4000 --camera 20 --storage 64
+---
 
-# Rus tilida:
-python predict.py --lang ru --ram 1800 --battery 1500 --camera 12 --storage 32
-
-# Ingliz tilida:
-python predict.py --lang en --ram 800 --battery 1000 --camera 5 --storage 16
-
-# Interaktiv rejimda ishga tushirish (savol-javob orqali):
-python predict.py --lang uz
-```
-
-### 2. Veb-interfeys orqali vizual tahlil (Web UI):
-Brauzeringizda [`index.html`](file:///c:/Users/HP%20PC/21/21.10/dataset/index.html) faylini oching. Slayderlar (RAM, Akkumulyator, Kamera va h.k.) yordamida qiymatlarni o'zgartirishingiz bilan AI modeli real vaqtda narx toifasi va ehtimolliklarini ko'rsatadi.
-
-### 3. Modelni qayta o'qitish:
-```bash
-python train_model.py
-```
-Model natijasi: **96.50% aniqlik** (Logistic Regression / Scaler).
-
-
+## 🌐 Bepul Internetga Joylash (GitHub Pages):
+Loyiha hech qanday murakkab server talab qilmaydi. GitHub repozitoriyangizdagi:
+`Settings -> Pages -> Branch: main -> Save` qilsangiz, loyiha internetda hamma uchun bepul va doimiy ishlab turadi!
