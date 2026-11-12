@@ -481,13 +481,15 @@ def main():
                 for update in updates.get('result', []):
                     offset = update['update_id'] + 1
                     
-                    if 'callback_data' in update:
-                        cb = update['callback_data']
+                    # Inline tugma callback so'rovlarini to'g'ri qayta ishlash
+                    if 'callback_query' in update:
+                        cb = update['callback_query']
                         cb_id = cb.get('id')
+                        cb_data = cb.get('data')
                         chat_id = cb.get('message', {}).get('chat', {}).get('id')
                         telegram_api('answerCallbackQuery', {'callback_query_id': cb_id})
-                        if chat_id:
-                            send_message(chat_id, "Asosiy menyuga qaytdingiz. Telefonni tanlang:", get_main_keyboard())
+                        if cb_data == 'back_to_menu' and chat_id:
+                            send_message(chat_id, "Asosiy menyuga qaytdingiz. Kerakli brendni tanlang yoki telefon nomini yozing:", get_main_keyboard())
                         continue
 
                     msg = update.get('message', {})

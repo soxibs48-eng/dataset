@@ -262,6 +262,29 @@ def main():
     high_uzs = round(final_uzs * 1.08 / 10000) * 10000
     inst_12 = round(final_uzs * 1.18 / 12 / 1000) * 1000
 
+    # Xotira variantlari
+    p128_usd = round(final_usd * 1.0)
+    p256_usd = round(final_usd * 1.18)
+    p512_usd = round(final_usd * 1.45)
+    p128_uzs = round(p128_usd * live_rate / 10000) * 10000
+    p256_uzs = round(p256_usd * live_rate / 10000) * 10000
+    p512_uzs = round(p512_usd * live_rate / 10000) * 10000
+
+    # Holatiga ko'ra narxlar
+    cond_ideal = round((final_uzs * 0.80) / 10000) * 10000
+    cond_mid = round((final_uzs * 0.68) / 10000) * 10000
+
+    # Shu narxdagi muqobil modellar
+    similars = []
+    for k, v in PHONE_MODELS.items():
+        if display_name and v['name'] == display_name:
+            continue
+        v_uzs = round(v['usd_price'] * live_rate / 10000) * 10000
+        diff = abs(v_uzs - final_uzs)
+        similars.append((diff, v['name'], v_uzs, v['usd_price']))
+    similars.sort(key=lambda x: x[0])
+    top_similars = similars[:3]
+
     print("\n" + "=" * 68)
     print(f"  🟢 JONLI VALYUTA KURSI (CBU API): 1 USD = {format_num(round(live_rate, 2))} UZS")
     if display_name:
@@ -272,6 +295,20 @@ def main():
     print(f"  💰 ANIQ TAVSIYA BOZOR NARXI: {format_num(final_uzs)} SO'M (≈ ${final_usd})")
     print(f"  📊 Bozor oralig'i: {format_num(low_uzs)} — {format_num(high_uzs)} so'm")
     print(f"  💳 12 oyga bo'lib to'lash (Nasiya): oyiga ~{format_num(inst_12)} so'm")
+    print("-" * 68)
+    print(f"  📦 Xotirasiga ko'ra narxlar:")
+    print(f"     • 128 GB: {format_num(p128_uzs)} so'm (≈ ${p128_usd})")
+    print(f"     • 256 GB: {format_num(p256_uzs)} so'm (≈ ${p256_usd})")
+    print(f"     • 512 GB: {format_num(p512_uzs)} so'm (≈ ${p512_usd})")
+    print("-" * 68)
+    print(f"  🏷️ Bozor holatiga ko'ra narxlar:")
+    print(f"     • 🆕 Yangi (Pachka/Kafolat): {format_num(final_uzs)} so'm")
+    print(f"     • 📦 B/U Ideal (Tirnalmagan): {format_num(cond_ideal)} so'm")
+    print(f"     • 📱 B/U O'rtacha (Kundalik): {format_num(cond_mid)} so'm")
+    print("-" * 68)
+    print(f"  🔄 Shu narxdagi muqobil modellar:")
+    for _, s_name, s_uzs, s_usd in top_similars:
+        print(f"     • {s_name}: {format_num(s_uzs)} so'm (≈ ${s_usd})")
     print("=" * 68)
 
 if __name__ == '__main__':
