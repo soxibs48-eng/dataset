@@ -70,8 +70,12 @@ def telegram_api(method, payload=None):
     try:
         with urllib.request.urlopen(req, timeout=35) as resp:
             return json.loads(resp.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        err_body = e.read().decode('utf-8', errors='ignore')
+        print(f"❌ Telegram API HTTPError ({method}): {e.code} - {err_body}")
+        return None
     except Exception as e:
-        print(f"Telegram API xatoligi ({method}): {e}")
+        print(f"❌ Telegram API xatoligi ({method}): {e}")
         return None
 
 def send_message(chat_id, text, reply_markup=None):
@@ -83,7 +87,14 @@ def send_message(chat_id, text, reply_markup=None):
     }
     if reply_markup:
         payload['reply_markup'] = reply_markup
-    return telegram_api('sendMessage', payload)
+    res = telegram_api('sendMessage', payload)
+    if not res or not res.get('ok'):
+        # HTML xatolik bersa, teglarni tozalab oddiy matn ko'rinishida qayta yuborish
+        plain_text = re.sub(r'<[^>]+>', '', text)
+        payload['text'] = plain_text
+        payload.pop('parse_mode', None)
+        res = telegram_api('sendMessage', payload)
+    return res
 
 def send_chat_action(chat_id, action="typing"):
     telegram_api('sendChatAction', {'chat_id': chat_id, 'action': action})
@@ -422,29 +433,43 @@ def find_best_model_match(query):
     """Kiritilgan matnga eng mos keluvchi telefon modelini topish"""
     q = query.lower().replace("📱", "").strip()
     
+    # Generic brend so'zlari bo'lsa model emas, brend menyusi ochilishi kerak
+    if q in {'apple', 'samsung', 'galaxy', 'xiaomi', 'redmi', 'poco', 'honor', 'realme', 'pixel', 'infinix', 'tecno', 'ayfon'}:
+        return None
+
     # 1. To'g'ridan-to'g'ri kalit mosligi
     if q in PHONE_MODELS:
         return q
 
-    # 2. Model nomidagi qidiruv
+    # 2. Model nomidagi to'liq moslik
     for key, model in PHONE_MODELS.items():
-        m_name = model['name'].lower()
-        if q == m_name or q in m_name:
+        if q == model['name'].lower():
             return key
 
-    # 3. Qisqartirilgan so'zlar bo'yicha qidiruv (masalan: "16 pro max", "s24 ultra", "a15")
+    # 3. Model kalitidagi to'liq so'zlar bo'yicha qidiruv (aniq moslikni tanlaydi)
     q_words = [w for w in re.split(r'[\s\-_]+', q) if len(w) > 1]
     if q_words:
         best_key = None
         max_matches = 0
+        min_diff = 99
         for key, model in PHONE_MODELS.items():
-            combined = f"{key} {model['name'].lower()}"
+            name_lower = model['name'].lower()
+            combined = f"{key} {name_lower}"
             matches = sum(1 for w in q_words if w in combined)
-            if matches > max_matches:
+            k_len = len(key.split())
+            diff = abs(k_len - len(q_words))
+            if matches > max_matches or (matches == max_matches and diff < min_diff):
                 max_matches = matches
+                min_diff = diff
                 best_key = key
         if max_matches >= max(1, len(q_words)):
             return best_key
+
+    # 4. Substring qidiruvi (kamida 4 ta harf bo'lsa)
+    if len(q) >= 4:
+        for key, model in PHONE_MODELS.items():
+            if q in model['name'].lower() or key in q:
+                return key
 
     return None
 
@@ -529,26 +554,37 @@ def main():
                         )
                         send_message(chat_id, welcome, get_main_keyboard())
 
-                    elif lower_text in ['salom', 'assalomu alaykum', '🔙 asosiy menyu']:
+                    # 1. Telefon modeli tugmasi bosilganmi (masalan: "📱 iPhone 16 Pro Max", "📱 Galaxy A15")?
+                    elif text.startswith('📱 ') or text.startswith('📱'):
+                        matched_key = find_best_model_match(text)
+                        if matched_key:
+                            print(f"📱 Telefon tanlandi: {matched_key} (chat_id: {chat_id})")
+                            quote = generate_phone_quote(matched_key, live_rate, font_style)
+                            inline_markup = get_phone_inline_buttons(matched_key)
+                            send_message(chat_id, quote, inline_markup)
+                        else:
+                            send_message(chat_id, f"⚠️ Kechirasiz, '{text}' modeli bazadan topilmadi.", get_main_keyboard())
+
+                    elif lower_text in ['salom', 'assalomu alaykum', '🔙 asosiy menyu', 'menyu', 'menu']:
                         send_message(chat_id, "Asosiy menyudasiz. Kerakli brendni tanlang yoki telefon nomini yozing:", get_main_keyboard())
 
-                    # Menyu bo'limlari
-                    elif 'apple' in lower_text or 'iphone' in lower_text and len(lower_text) < 15:
+                    # 2. Menyu bo'limlari (Brendlar menyusi)
+                    elif text == '🍏 Apple iPhone (12)' or lower_text in ['apple', 'ayfon', 'apple iphone']:
                         send_message(chat_id, "🍏 <b>Apple iPhone</b> modellaridan birini tanlang (12 ta model):", get_apple_keyboard())
 
-                    elif 'samsung' in lower_text or ('galaxy' in lower_text and len(lower_text) < 15):
+                    elif text == '🔷 Samsung Galaxy (15)' or lower_text in ['samsung', 'galaxy', 'samsung galaxy']:
                         send_message(chat_id, "🔷 <b>Samsung Galaxy</b> modellaridan birini tanlang (15 ta model):", get_samsung_keyboard())
 
-                    elif 'xiaomi' in lower_text or ('redmi' in lower_text and len(lower_text) < 15):
+                    elif text == '🟠 Xiaomi & Redmi (12)' or lower_text in ['xiaomi', 'redmi', 'xiaomi redmi', 'mi']:
                         send_message(chat_id, "🟠 <b>Xiaomi / Redmi</b> modellaridan birini tanlang (12 ta model):", get_xiaomi_keyboard())
 
-                    elif 'poco' in lower_text and len(lower_text) < 15:
+                    elif text == '🚀 POCO (6)' or lower_text in ['poco']:
                         send_message(chat_id, "🚀 <b>POCO</b> modellaridan birini tanlang (6 ta model):", get_poco_keyboard())
 
-                    elif 'honor' in lower_text or 'realme' in lower_text and len(lower_text) < 20:
+                    elif text == '🟡 Honor & Realme (13)' or lower_text in ['honor', 'realme', 'honor realme']:
                         send_message(chat_id, "🟡 <b>Honor va Realme</b> modellaridan birini tanlang (13 ta model):", get_honor_realme_keyboard())
 
-                    elif 'pixel' in lower_text or 'boshqalar' in lower_text or 'infinix' in lower_text or 'tecno' in lower_text and len(lower_text) < 20:
+                    elif text == '🟢 Pixel & Boshqalar (7)' or lower_text in ['pixel', 'infinix', 'tecno', 'boshqalar', 'google pixel']:
                         send_message(chat_id, "🟢 <b>Google Pixel, Infinix & Tecno</b> modellaridan birini tanlang:", get_pixel_other_keyboard())
 
                     # Yozuv turini o'zgartirish (Shriftlar)
@@ -647,6 +683,7 @@ def main():
                         # Tekshiruv 2: 65+ telefon modellari bo'yicha qidiruv
                         matched_key = find_best_model_match(text)
                         if matched_key:
+                            print(f"🔍 Matn orqali model topildi: {matched_key} (chat_id: {chat_id})")
                             quote = generate_phone_quote(matched_key, live_rate, font_style)
                             inline_markup = get_phone_inline_buttons(matched_key)
                             send_message(chat_id, quote, inline_markup)
