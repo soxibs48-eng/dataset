@@ -94,3 +94,11 @@ python test_suite.py
 ## 🌐 Bepul Internetga Joylash (GitHub Pages):
 Loyiha hech qanday murakkab server talab qilmaydi. GitHub repozitoriyangizdagi:
 `Settings -> Pages -> Branch: main -> Save` qilsangiz, loyiha internetda hamma uchun bepul va doimiy ishlab turadi!
+
+---
+
+## 📞 Bog'lanish va Muallif:
+- **Telegram Bot:** [@telefonnarxx_bot](https://t.me/telefonnarxx_bot)
+- **Telegram Profil:** [@Sbrjonv](https://t.me/Sbrjonv)
+- **Telefon:** `+998 94 215 01 21`
+- **GitHub:** [https://github.com/soxibs48-eng/dataset](https://github.com/soxibs48-eng/dataset)

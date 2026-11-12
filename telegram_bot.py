@@ -117,7 +117,8 @@ def get_main_keyboard():
                 {'text': '🌐 Saytni Ochish (Mini App)', 'web_app': {'url': WEB_APP_URL}},
                 {'text': '💵 Jonli Dollar Kursi'}
             ],
-            [{'text': '🌐 Sayt Havolasi (Brauzer)'}, {'text': 'ℹ️ Bot haqida'}]
+            [{'text': '🌐 Sayt Havolasi (Brauzer)'}, {'text': 'ℹ️ Bot haqida'}],
+            [{'text': '📞 Bog\'lanish / Aloqa'}]
         ],
         'resize_keyboard': True
     }
@@ -549,7 +550,8 @@ def main():
                             f"Bazada <b>65+ ta</b> eng so'nggi va mashhur telefonlar mavjud.\n"
                             f"Men sun'iy intellekt (Scikit-Learn) va Markaziy Bankning jonli kursi asosida "
                             f"telefonlarning <b>haqqoniy bozor narxi</b> va <b>nasiya to'lovlarini</b> hisoblab beraman.\n\n"
-                            f"🔗 <b>Rasmiy Veb-Sayt:</b> {WEB_APP_URL}\n\n"
+                            f"🔗 <b>Rasmiy Veb-Sayt:</b> {WEB_APP_URL}\n"
+                            f"📞 <b>Bog'lanish:</b> @Sbrjonv • <code>+998 94 215 01 21</code>\n\n"
                             f"👇 <i>Kerakli brendni tanlang yoki telefon nomini yozing:</i>"
                         )
                         send_message(chat_id, welcome, get_main_keyboard())
@@ -656,10 +658,30 @@ def main():
                             "• <b>ML Model:</b> Scikit-learn (Logistic Regression, 96.5% aniqlik)\n"
                             "• <b>Dataset:</b> Kaggle Mobile Price Classification\n"
                             "• <b>Valyuta kursi:</b> O'zbekiston Markaziy Banki jonli API\n"
-                            "• <b>Dasturchi:</b> Soxibjon (@soxibs48-eng)\n"
+                            "• <b>Muallif:</b> Soxibjon (@Sbrjonv)\n"
+                            "• <b>Aloqa:</b> @Sbrjonv • +998 94 215 01 21\n"
                             "• <b>Kod ombori:</b> https://github.com/soxibs48-eng/dataset"
                         )
                         send_message(chat_id, about, get_main_keyboard())
+
+                    # Aloqa / Bog'lanish
+                    elif 'aloqa' in lower_text or 'bog\'lanish' in lower_text or 'boglanish' in lower_text or '/contact' in lower_text or 'kontakt' in lower_text or 'admin' in lower_text or 'telefon' in lower_text and len(lower_text) < 15:
+                        contact_msg = (
+                            "📞 <b>Biz bilan bog'lanish:</b>\n\n"
+                            "Har qanday savol, taklif yoki hamkorlik bo'yicha bemalol murojaat qilishingiz mumkin:\n\n"
+                            "👤 <b>Administrator:</b> @Sbrjonv\n"
+                            "💬 <b>Telegram:</b> <a href=\"https://t.me/Sbrjonv\">@Sbrjonv</a>\n"
+                            "📞 <b>Telefon raqam:</b> <code>+998 94 215 01 21</code>\n\n"
+                            "⏰ <i>24/7 aloqadamiz!</i>"
+                        )
+                        contact_markup = {
+                            'inline_keyboard': [
+                                [
+                                    {'text': '💬 Telegramda yozish (@Sbrjonv)', 'url': 'https://t.me/Sbrjonv'}
+                                ]
+                            ]
+                        }
+                        send_message(chat_id, contact_msg, contact_markup)
 
                     # Custom parametrlar
                     elif 'parametr' in lower_text or 'o\'z parametr' in lower_text:
