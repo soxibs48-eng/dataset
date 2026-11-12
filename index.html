@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartPrice AI — Smartfon Narxini Baholash Tizimi</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans -->
+  <!-- Google Fonts: Plus Jakarta Sans, Outfit, Space Grotesk, Cinzel, Syne -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-phone: 'Outfit', -apple-system, sans-serif;
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --primary-light: #eef2ff;
@@ -448,6 +449,108 @@
     /* RIGHT COLUMN: PREDICTION CARD */
     .result-card-container { position: sticky; top: 90px; }
 
+    /* Phone Name Typography Styles */
+    .font-outfit { font-family: 'Outfit', -apple-system, sans-serif !important; }
+    .font-space { font-family: 'Space Grotesk', -apple-system, monospace !important; }
+    .font-cinzel { font-family: 'Cinzel', Georgia, serif !important; letter-spacing: 0.04em !important; font-weight: 700 !important; }
+    .font-syne { font-family: 'Syne', sans-serif !important; font-weight: 800 !important; }
+
+    /* Active Phone Showcase Header */
+    .active-phone-banner {
+      background: rgba(0, 0, 0, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .active-phone-meta {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .active-phone-brand-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #93c5fd;
+      display: inline-block;
+      width: fit-content;
+    }
+    .active-phone-name {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.2;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
+    }
+    .active-phone-badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.18);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      white-space: nowrap;
+    }
+
+    /* Font Switcher Bar for Phone Typography */
+    .font-switcher-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: var(--card-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .font-switcher-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .font-pill-btn {
+      padding: 5px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1.5px solid var(--card-border);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .font-pill-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .font-pill-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
     /* HERO PRICE TICKET CARD */
     .hero-price-ticket {
       background: linear-gradient(135deg, #312e81 0%, #4338ca 50%, #2563eb 100%);
@@ -713,42 +816,110 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
       </div>
       <div>
-        <div class="msc-title" id="lbl-quick-model">Tayyor telefon modelini tanlang:</div>
-        <div class="msc-sub" id="sub-quick-model">Modelni tanlaganingizda barcha parametrlari avtomatik to'ldiriladi</div>
+        <div class="msc-title" id="lbl-quick-model">Tayyor telefon modelini tanlang (65+ mashhur model):</div>
+        <div class="msc-sub" id="sub-quick-model">Modelni tanlaganingizda barcha texnik parametrlari avtomatik to'ldiriladi</div>
       </div>
     </div>
     <div>
       <select id="select-phone-model" class="model-dropdown" onchange="onSelectPhoneModel(this.value)">
-        <option value="" disabled selected>-- Modelni tanlang --</option>
-        <optgroup label="🍏 Apple iPhone">
-          <option value="iphone_15_pro_max">Apple iPhone 15 Pro Max (256 GB)</option>
-          <option value="iphone_15">Apple iPhone 15 (128 GB)</option>
-          <option value="iphone_13">Apple iPhone 13 (128 GB)</option>
-          <option value="iphone_11">Apple iPhone 11 (64 GB)</option>
+        <option value="" disabled selected>-- 65+ Telefon modelidan birini tanlang --</option>
+        
+        <optgroup label="🍏 Apple iPhone (12 model)">
+          <option value="iphone_16_pro_max">Apple iPhone 16 Pro Max (256 GB) — $1299</option>
+          <option value="iphone_16_pro">Apple iPhone 16 Pro (128 GB) — $1099</option>
+          <option value="iphone_16">Apple iPhone 16 (128 GB) — $899</option>
+          <option value="iphone_15_pro_max">Apple iPhone 15 Pro Max (256 GB) — $1180</option>
+          <option value="iphone_15_pro">Apple iPhone 15 Pro (128 GB) — $990</option>
+          <option value="iphone_15">Apple iPhone 15 (128 GB) — $840</option>
+          <option value="iphone_14_pro_max">Apple iPhone 14 Pro Max (128 GB) — $890</option>
+          <option value="iphone_14">Apple iPhone 14 (128 GB) — $690</option>
+          <option value="iphone_13">Apple iPhone 13 (128 GB) — $610</option>
+          <option value="iphone_12">Apple iPhone 12 (128 GB) — $470</option>
+          <option value="iphone_11">Apple iPhone 11 (64 GB) — $350</option>
+          <option value="iphone_se">Apple iPhone SE (2022) — $320</option>
         </optgroup>
-        <optgroup label="🔷 Samsung Galaxy">
-          <option value="galaxy_s24_ultra">Samsung Galaxy S24 Ultra (256 GB)</option>
-          <option value="galaxy_s23_fe">Samsung Galaxy S23 FE (128 GB)</option>
-          <option value="galaxy_a55">Samsung Galaxy A55 5G (128 GB)</option>
-          <option value="galaxy_a35">Samsung Galaxy A35 (128 GB)</option>
-          <option value="galaxy_a15">Samsung Galaxy A15 (128 GB)</option>
-          <option value="galaxy_a05">Samsung Galaxy A05 (64 GB)</option>
+
+        <optgroup label="🔷 Samsung Galaxy (15 model)">
+          <option value="galaxy_s24_ultra">Samsung Galaxy S24 Ultra (256 GB) — $1150</option>
+          <option value="galaxy_s24_plus">Samsung Galaxy S24+ (256 GB) — $940</option>
+          <option value="galaxy_s24">Samsung Galaxy S24 (128 GB) — $790</option>
+          <option value="galaxy_s23_ultra">Samsung Galaxy S23 Ultra (256 GB) — $880</option>
+          <option value="galaxy_s23_fe">Samsung Galaxy S23 FE (128 GB) — $550</option>
+          <option value="galaxy_z_fold_5">Samsung Galaxy Z Fold 5 (256 GB) — $1380</option>
+          <option value="galaxy_z_flip_5">Samsung Galaxy Z Flip 5 (256 GB) — $780</option>
+          <option value="galaxy_a55">Samsung Galaxy A55 5G (128 GB) — $380</option>
+          <option value="galaxy_a54">Samsung Galaxy A54 5G (128 GB) — $320</option>
+          <option value="galaxy_a35">Samsung Galaxy A35 5G (128 GB) — $310</option>
+          <option value="galaxy_a25">Samsung Galaxy A25 5G (128 GB) — $240</option>
+          <option value="galaxy_a15">Samsung Galaxy A15 (128 GB) — $185</option>
+          <option value="galaxy_a05s">Samsung Galaxy A05s (64 GB) — $135</option>
+          <option value="galaxy_a05">Samsung Galaxy A05 (64 GB) — $115</option>
+          <option value="galaxy_a04">Samsung Galaxy A04 (32 GB) — $85</option>
         </optgroup>
-        <optgroup label="🟠 Xiaomi & Redmi & POCO">
-          <option value="xiaomi_14">Xiaomi 14 Ultra (512 GB)</option>
-          <option value="redmi_note_13_pro_plus">Redmi Note 13 Pro+ (256 GB)</option>
-          <option value="redmi_note_13">Redmi Note 13 (128 GB)</option>
-          <option value="poco_x6_pro">POCO X6 Pro (256 GB)</option>
-          <option value="redmi_13c">Redmi 13C (128 GB)</option>
-          <option value="redmi_a3">Redmi A3 (64 GB)</option>
+
+        <optgroup label="🟠 Xiaomi & Redmi (12 model)">
+          <option value="xiaomi_14_ultra">Xiaomi 14 Ultra (512 GB) — $1080</option>
+          <option value="xiaomi_14">Xiaomi 14 (256 GB) — $750</option>
+          <option value="xiaomi_13t_pro">Xiaomi 13T Pro (512 GB) — $580</option>
+          <option value="redmi_note_13_pro_plus">Redmi Note 13 Pro+ 5G (256 GB) — $410</option>
+          <option value="redmi_note_13_4g">Redmi Note 13 Pro 4G (128 GB) — $280</option>
+          <option value="redmi_note_13">Redmi Note 13 (128 GB) — $210</option>
+          <option value="redmi_note_12_pro">Redmi Note 12 Pro (128 GB) — $195</option>
+          <option value="redmi_13">Redmi 13 (128 GB) — $165</option>
+          <option value="redmi_13c">Redmi 13C (128 GB) — $140</option>
+          <option value="redmi_12">Redmi 12 (128 GB) — $130</option>
+          <option value="redmi_a3">Redmi A3 (64 GB) — $90</option>
+          <option value="redmi_a2">Redmi A2 (32 GB) — $75</option>
         </optgroup>
-        <optgroup label="🟡 Honor & Realme">
-          <option value="honor_90">Honor 90 (256 GB)</option>
-          <option value="realme_12_pro">Realme 12 Pro (256 GB)</option>
-          <option value="realme_c55">Realme C55 (128 GB)</option>
+
+        <optgroup label="🚀 POCO (6 model)">
+          <option value="poco_f6_pro">POCO F6 Pro (512 GB) — $520</option>
+          <option value="poco_f6">POCO F6 (256 GB) — $390</option>
+          <option value="poco_x6_pro">POCO X6 Pro 5G (256 GB) — $370</option>
+          <option value="poco_x6">POCO X6 5G (256 GB) — $270</option>
+          <option value="poco_m6_pro">POCO M6 Pro (256 GB) — $210</option>
+          <option value="poco_c65">POCO C65 (128 GB) — $125</option>
+        </optgroup>
+
+        <optgroup label="🟡 Honor & Realme (13 model)">
+          <option value="honor_magic_6_pro">Honor Magic 6 Pro (512 GB) — $1050</option>
+          <option value="honor_200_pro">Honor 200 Pro (512 GB) — $620</option>
+          <option value="honor_90">Honor 90 (256 GB) — $390</option>
+          <option value="honor_x9b">Honor X9b (256 GB) — $290</option>
+          <option value="honor_x8b">Honor X8b (128 GB) — $210</option>
+          <option value="honor_x7b">Honor X7b (128 GB) — $160</option>
+          <option value="realme_gt_6">Realme GT 6 (256 GB) — $540</option>
+          <option value="realme_12_pro_plus">Realme 12 Pro+ 5G (256 GB) — $420</option>
+          <option value="realme_12_pro">Realme 12 Pro (256 GB) — $350</option>
+          <option value="realme_12">Realme 12 5G (128 GB) — $250</option>
+          <option value="realme_c67">Realme C67 (128 GB) — $170</option>
+          <option value="realme_c55">Realme C55 (128 GB) — $160</option>
+          <option value="realme_note_50">Realme Note 50 (64 GB) — $85</option>
+        </optgroup>
+
+        <optgroup label="🟢 Google Pixel, Infinix & Tecno (7 model)">
+          <option value="pixel_8_pro">Google Pixel 8 Pro (128 GB) — $880</option>
+          <option value="pixel_8a">Google Pixel 8a (128 GB) — $490</option>
+          <option value="pixel_7a">Google Pixel 7a (128 GB) — $370</option>
+          <option value="infinix_gt_20_pro">Infinix GT 20 Pro (256 GB) — $310</option>
+          <option value="infinix_note_40_pro">Infinix Note 40 Pro (256 GB) — $260</option>
+          <option value="tecno_camon_30_pro">Tecno Camon 30 Pro 5G (256 GB) — $340</option>
+          <option value="tecno_spark_20_pro">Tecno Spark 20 Pro (256 GB) — $165</option>
         </optgroup>
       </select>
     </div>
+  </div>
+
+  <!-- FONT SWITCHER BAR FOR PHONE TITLES -->
+  <div class="font-switcher-bar">
+    <span class="font-switcher-label">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+      Telefon nomi yozuv turi (Shrift):
+    </span>
+    <button class="font-pill-btn active" onclick="switchPhoneFont('outfit', this)">✨ Outfit (Zamonaviy)</button>
+    <button class="font-pill-btn" onclick="switchPhoneFont('space', this)">🚀 Space Grotesk (Texno)</button>
+    <button class="font-pill-btn" onclick="switchPhoneFont('cinzel', this)">👑 Cinzel (Lyuks)</button>
+    <button class="font-pill-btn" onclick="switchPhoneFont('syne', this)">💎 Syne (Kreativ)</button>
   </div>
 </div>
 
@@ -770,6 +941,10 @@
       <button class="brand-chip" onclick="setPreset('s24')">🔷 Galaxy S24</button>
       <button class="brand-chip" onclick="setPreset('a15')">📱 Galaxy A15</button>
       <button class="brand-chip" onclick="setPreset('redmi')">🟠 Redmi Note</button>
+      <button class="brand-chip" onclick="setPreset('poco')">🚀 POCO X6</button>
+      <button class="brand-chip" onclick="setPreset('honor')">🟡 Honor 90</button>
+      <button class="brand-chip" onclick="setPreset('realme')">⚡ Realme 12</button>
+      <button class="brand-chip" onclick="setPreset('pixel')">🟢 Pixel 8</button>
       <button class="brand-chip" onclick="setPreset('budget')">🪙 Hamyonbop</button>
     </div>
 
@@ -908,6 +1083,15 @@
 
     <!-- MAIN EXACT PRICE HERO TICKET -->
     <div class="hero-price-ticket" id="hero-price-banner">
+      <!-- ACTIVE PHONE SHOWCASE BANNER -->
+      <div class="active-phone-banner">
+        <div class="active-phone-meta">
+          <span class="active-phone-brand-tag" id="ph-brand-badge">SAMSUNG</span>
+          <div class="active-phone-name font-outfit" id="ph-active-model-name">Samsung Galaxy A15</div>
+        </div>
+        <div class="active-phone-badge" id="ph-storage-badge">128 GB</div>
+      </div>
+
       <div class="hpt-label" id="lbl-ph-title">TAVSIYA ETILGAN BOZOR NARXI:</div>
       <div class="hpt-price-main" id="ph-price-uzs">2 350 000 so'm</div>
       <div class="hpt-usd" id="ph-price-usd">≈ $196</div>
@@ -1016,25 +1200,82 @@ const MODEL = {
 };
 
 const PHONE_MODELS = {
+  // Apple iPhone
+  iphone_16_pro_max: { name: "Apple iPhone 16 Pro Max", ram: 3980, battery: 4685, cam: 48, storage: 256, clock: 3.5, res: 1440, usd_price: 1299 },
+  iphone_16_pro: { name: "Apple iPhone 16 Pro", ram: 3950, battery: 3582, cam: 48, storage: 128, clock: 3.5, res: 1200, usd_price: 1099 },
+  iphone_16: { name: "Apple iPhone 16", ram: 3800, battery: 3561, cam: 48, storage: 128, clock: 3.3, res: 1179, usd_price: 899 },
   iphone_15_pro_max: { name: "Apple iPhone 15 Pro Max", ram: 3950, battery: 4422, cam: 48, storage: 256, clock: 3.4, res: 1440, usd_price: 1180 },
+  iphone_15_pro: { name: "Apple iPhone 15 Pro", ram: 3900, battery: 3274, cam: 48, storage: 128, clock: 3.4, res: 1179, usd_price: 990 },
   iphone_15: { name: "Apple iPhone 15", ram: 3700, battery: 3349, cam: 48, storage: 128, clock: 3.2, res: 1179, usd_price: 840 },
+  iphone_14_pro_max: { name: "Apple iPhone 14 Pro Max", ram: 3800, battery: 4323, cam: 48, storage: 128, clock: 3.2, res: 1290, usd_price: 890 },
+  iphone_14: { name: "Apple iPhone 14", ram: 3600, battery: 3279, cam: 12, storage: 128, clock: 3.0, res: 1170, usd_price: 690 },
   iphone_13: { name: "Apple iPhone 13", ram: 3400, battery: 3227, cam: 12, storage: 128, clock: 3.0, res: 1170, usd_price: 610 },
-  iphone_11: { name: "Apple iPhone 11", ram: 3000, battery: 3110, cam: 12, storage: 64, clock: 2.6, res: 828, usd_price: 360 },
+  iphone_12: { name: "Apple iPhone 12", ram: 3200, battery: 2815, cam: 12, storage: 128, clock: 2.8, res: 1170, usd_price: 470 },
+  iphone_11: { name: "Apple iPhone 11", ram: 3000, battery: 3110, cam: 12, storage: 64, clock: 2.6, res: 828, usd_price: 350 },
+  iphone_se: { name: "Apple iPhone SE (2022)", ram: 2800, battery: 2018, cam: 12, storage: 64, clock: 2.8, res: 750, usd_price: 320 },
+
+  // Samsung Galaxy
   galaxy_s24_ultra: { name: "Samsung Galaxy S24 Ultra", ram: 3990, battery: 5000, cam: 108, storage: 256, clock: 3.3, res: 1440, usd_price: 1150 },
+  galaxy_s24_plus: { name: "Samsung Galaxy S24+", ram: 3950, battery: 4900, cam: 50, storage: 256, clock: 3.2, res: 1440, usd_price: 940 },
+  galaxy_s24: { name: "Samsung Galaxy S24", ram: 3800, battery: 4000, cam: 50, storage: 128, clock: 3.2, res: 1080, usd_price: 790 },
+  galaxy_s23_ultra: { name: "Samsung Galaxy S23 Ultra", ram: 3950, battery: 5000, cam: 108, storage: 256, clock: 3.2, res: 1440, usd_price: 880 },
   galaxy_s23_fe: { name: "Samsung Galaxy S23 FE", ram: 3600, battery: 4500, cam: 50, storage: 128, clock: 2.8, res: 1080, usd_price: 550 },
+  galaxy_z_fold_5: { name: "Samsung Galaxy Z Fold 5", ram: 3990, battery: 4400, cam: 50, storage: 256, clock: 3.3, res: 1812, usd_price: 1380 },
+  galaxy_z_flip_5: { name: "Samsung Galaxy Z Flip 5", ram: 3700, battery: 3700, cam: 12, storage: 256, clock: 3.2, res: 1080, usd_price: 780 },
   galaxy_a55: { name: "Samsung Galaxy A55 5G", ram: 2900, battery: 5000, cam: 50, storage: 128, clock: 2.4, res: 1080, usd_price: 380 },
-  galaxy_a35: { name: "Samsung Galaxy A35", ram: 2400, battery: 5000, cam: 50, storage: 128, clock: 2.2, res: 1080, usd_price: 310 },
+  galaxy_a54: { name: "Samsung Galaxy A54 5G", ram: 2800, battery: 5000, cam: 50, storage: 128, clock: 2.4, res: 1080, usd_price: 320 },
+  galaxy_a35: { name: "Samsung Galaxy A35 5G", ram: 2400, battery: 5000, cam: 50, storage: 128, clock: 2.2, res: 1080, usd_price: 310 },
+  galaxy_a25: { name: "Samsung Galaxy A25 5G", ram: 2200, battery: 5000, cam: 50, storage: 128, clock: 2.2, res: 1080, usd_price: 240 },
   galaxy_a15: { name: "Samsung Galaxy A15", ram: 1750, battery: 5000, cam: 50, storage: 128, clock: 2.0, res: 1080, usd_price: 185 },
+  galaxy_a05s: { name: "Samsung Galaxy A05s", ram: 1300, battery: 5000, cam: 50, storage: 64, clock: 1.8, res: 1080, usd_price: 135 },
   galaxy_a05: { name: "Samsung Galaxy A05", ram: 950, battery: 5000, cam: 50, storage: 64, clock: 1.8, res: 720, usd_price: 115 },
-  xiaomi_14: { name: "Xiaomi 14 Ultra", ram: 4000, battery: 5000, cam: 50, storage: 512, clock: 3.3, res: 1440, usd_price: 1080 },
-  redmi_note_13_pro_plus: { name: "Redmi Note 13 Pro+", ram: 3300, battery: 5000, cam: 108, storage: 256, clock: 2.8, res: 1220, usd_price: 410 },
+  galaxy_a04: { name: "Samsung Galaxy A04", ram: 800, battery: 5000, cam: 50, storage: 32, clock: 1.6, res: 720, usd_price: 85 },
+
+  // Xiaomi & Redmi
+  xiaomi_14_ultra: { name: "Xiaomi 14 Ultra", ram: 4000, battery: 5000, cam: 50, storage: 512, clock: 3.3, res: 1440, usd_price: 1080 },
+  xiaomi_14: { name: "Xiaomi 14", ram: 3900, battery: 4610, cam: 50, storage: 256, clock: 3.3, res: 1200, usd_price: 750 },
+  xiaomi_13t_pro: { name: "Xiaomi 13T Pro", ram: 3700, battery: 5000, cam: 50, storage: 512, clock: 3.0, res: 1220, usd_price: 580 },
+  redmi_note_13_pro_plus: { name: "Redmi Note 13 Pro+ 5G", ram: 3300, battery: 5000, cam: 108, storage: 256, clock: 2.8, res: 1220, usd_price: 410 },
+  redmi_note_13_4g: { name: "Redmi Note 13 Pro 4G", ram: 2800, battery: 5000, cam: 108, storage: 128, clock: 2.4, res: 1080, usd_price: 280 },
   redmi_note_13: { name: "Redmi Note 13", ram: 2100, battery: 5000, cam: 108, storage: 128, clock: 2.4, res: 1080, usd_price: 210 },
-  poco_x6_pro: { name: "POCO X6 Pro 5G", ram: 3500, battery: 5000, cam: 64, storage: 256, clock: 3.0, res: 1220, usd_price: 370 },
+  redmi_note_12_pro: { name: "Redmi Note 12 Pro", ram: 2300, battery: 5000, cam: 50, storage: 128, clock: 2.2, res: 1080, usd_price: 195 },
+  redmi_13: { name: "Redmi 13", ram: 1800, battery: 5030, cam: 108, storage: 128, clock: 2.0, res: 1080, usd_price: 165 },
   redmi_13c: { name: "Redmi 13C", ram: 1500, battery: 5000, cam: 50, storage: 128, clock: 2.0, res: 720, usd_price: 140 },
+  redmi_12: { name: "Redmi 12", ram: 1400, battery: 5000, cam: 50, storage: 128, clock: 2.0, res: 1080, usd_price: 130 },
   redmi_a3: { name: "Redmi A3", ram: 750, battery: 5000, cam: 8, storage: 64, clock: 1.6, res: 720, usd_price: 90 },
+  redmi_a2: { name: "Redmi A2", ram: 650, battery: 5000, cam: 8, storage: 32, clock: 1.4, res: 720, usd_price: 75 },
+
+  // POCO
+  poco_f6_pro: { name: "POCO F6 Pro", ram: 3900, battery: 5000, cam: 50, storage: 512, clock: 3.2, res: 1440, usd_price: 520 },
+  poco_f6: { name: "POCO F6", ram: 3700, battery: 5000, cam: 50, storage: 256, clock: 3.0, res: 1220, usd_price: 390 },
+  poco_x6_pro: { name: "POCO X6 Pro 5G", ram: 3500, battery: 5000, cam: 64, storage: 256, clock: 3.0, res: 1220, usd_price: 370 },
+  poco_x6: { name: "POCO X6 5G", ram: 2800, battery: 5100, cam: 64, storage: 256, clock: 2.4, res: 1220, usd_price: 270 },
+  poco_m6_pro: { name: "POCO M6 Pro", ram: 2400, battery: 5000, cam: 64, storage: 256, clock: 2.2, res: 1080, usd_price: 210 },
+  poco_c65: { name: "POCO C65", ram: 1400, battery: 5000, cam: 50, storage: 128, clock: 2.0, res: 720, usd_price: 125 },
+
+  // Honor & Realme
+  honor_magic_6_pro: { name: "Honor Magic 6 Pro", ram: 3990, battery: 5600, cam: 50, storage: 512, clock: 3.3, res: 1280, usd_price: 1050 },
+  honor_200_pro: { name: "Honor 200 Pro", ram: 3750, battery: 5200, cam: 50, storage: 512, clock: 3.0, res: 1224, usd_price: 620 },
   honor_90: { name: "Honor 90", ram: 3400, battery: 5000, cam: 108, storage: 256, clock: 2.5, res: 1200, usd_price: 390 },
+  honor_x9b: { name: "Honor X9b", ram: 2800, battery: 5800, cam: 108, storage: 256, clock: 2.2, res: 1220, usd_price: 290 },
+  honor_x8b: { name: "Honor X8b", ram: 2200, battery: 4500, cam: 108, storage: 128, clock: 2.4, res: 1080, usd_price: 210 },
+  honor_x7b: { name: "Honor X7b", ram: 1800, battery: 6000, cam: 108, storage: 128, clock: 2.4, res: 1080, usd_price: 160 },
+  realme_gt_6: { name: "Realme GT 6", ram: 3800, battery: 5500, cam: 50, storage: 256, clock: 3.2, res: 1264, usd_price: 540 },
+  realme_12_pro_plus: { name: "Realme 12 Pro+ 5G", ram: 3400, battery: 5000, cam: 50, storage: 256, clock: 2.4, res: 1080, usd_price: 420 },
   realme_12_pro: { name: "Realme 12 Pro", ram: 3200, battery: 5000, cam: 50, storage: 256, clock: 2.2, res: 1080, usd_price: 350 },
-  realme_c55: { name: "Realme C55", ram: 2100, battery: 5000, cam: 64, storage: 128, clock: 2.0, res: 1080, usd_price: 180 }
+  realme_12: { name: "Realme 12 5G", ram: 2400, battery: 5000, cam: 108, storage: 128, clock: 2.2, res: 1080, usd_price: 250 },
+  realme_c67: { name: "Realme C67", ram: 1900, battery: 5000, cam: 108, storage: 128, clock: 2.2, res: 1080, usd_price: 170 },
+  realme_c55: { name: "Realme C55", ram: 2100, battery: 5000, cam: 64, storage: 128, clock: 2.0, res: 1080, usd_price: 160 },
+  realme_note_50: { name: "Realme Note 50", ram: 850, battery: 5000, cam: 13, storage: 64, clock: 1.8, res: 720, usd_price: 85 },
+
+  // Google Pixel, Infinix & Tecno
+  pixel_8_pro: { name: "Google Pixel 8 Pro", ram: 3950, battery: 5050, cam: 50, storage: 128, clock: 3.0, res: 1344, usd_price: 880 },
+  pixel_8a: { name: "Google Pixel 8a", ram: 3400, battery: 4492, cam: 64, storage: 128, clock: 3.0, res: 1080, usd_price: 490 },
+  pixel_7a: { name: "Google Pixel 7a", ram: 3100, battery: 4385, cam: 64, storage: 128, clock: 2.8, res: 1080, usd_price: 370 },
+  infinix_gt_20_pro: { name: "Infinix GT 20 Pro", ram: 3200, battery: 5000, cam: 108, storage: 256, clock: 3.1, res: 1080, usd_price: 310 },
+  infinix_note_40_pro: { name: "Infinix Note 40 Pro", ram: 2600, battery: 5000, cam: 108, storage: 256, clock: 2.2, res: 1080, usd_price: 260 },
+  tecno_camon_30_pro: { name: "Tecno Camon 30 Pro 5G", ram: 3400, battery: 5000, cam: 50, storage: 256, clock: 3.1, res: 1080, usd_price: 340 },
+  tecno_spark_20_pro: { name: "Tecno Spark 20 Pro", ram: 1800, battery: 5000, cam: 108, storage: 256, clock: 2.2, res: 1080, usd_price: 165 }
 };
 
 const I18N = {
@@ -1260,10 +1501,48 @@ function togglePro() {
   document.getElementById('pro-wrap').classList.toggle('show');
 }
 
+let currentPhoneFont = 'outfit';
+
+function switchPhoneFont(fontName, btn) {
+  currentPhoneFont = fontName;
+  const nameEl = document.getElementById('ph-active-model-name');
+  if (nameEl) {
+    nameEl.classList.remove('font-outfit', 'font-space', 'font-cinzel', 'font-syne');
+    nameEl.classList.add(`font-${fontName}`);
+  }
+  document.querySelectorAll('.font-pill-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+}
+
 function onSelectPhoneModel(modelKey) {
   selectedModelKey = modelKey;
   const model = PHONE_MODELS[modelKey];
   if (!model) return;
+
+  const nameEl = document.getElementById('ph-active-model-name');
+  if (nameEl) nameEl.innerText = model.name;
+
+  const brandEl = document.getElementById('ph-brand-badge');
+  if (brandEl) {
+    let brand = "SMARTFON";
+    if (model.name.includes("Apple") || model.name.includes("iPhone")) brand = "APPLE";
+    else if (model.name.includes("Samsung") || model.name.includes("Galaxy")) brand = "SAMSUNG";
+    else if (model.name.includes("Xiaomi")) brand = "XIAOMI";
+    else if (model.name.includes("Redmi")) brand = "REDMI";
+    else if (model.name.includes("POCO")) brand = "POCO";
+    else if (model.name.includes("Honor")) brand = "HONOR";
+    else if (model.name.includes("Realme")) brand = "REALME";
+    else if (model.name.includes("Pixel")) brand = "GOOGLE";
+    else if (model.name.includes("Infinix")) brand = "INFINIX";
+    else if (model.name.includes("Tecno")) brand = "TECNO";
+    brandEl.innerText = brand;
+  }
+
+  const storageEl = document.getElementById('ph-storage-badge');
+  if (storageEl) storageEl.innerText = `${model.storage} GB`;
+
+  const dropdown = document.getElementById('select-phone-model');
+  if (dropdown) dropdown.value = modelKey;
 
   document.getElementById('slider-ram').value = model.ram;
   document.getElementById('slider-battery').value = model.battery;
@@ -1276,10 +1555,14 @@ function onSelectPhoneModel(modelKey) {
 }
 
 function setPreset(brand) {
-  if (brand === 'iphone') onSelectPhoneModel('iphone_15');
+  if (brand === 'iphone') onSelectPhoneModel('iphone_16_pro_max');
   else if (brand === 's24') onSelectPhoneModel('galaxy_s24_ultra');
   else if (brand === 'a15') onSelectPhoneModel('galaxy_a15');
   else if (brand === 'redmi') onSelectPhoneModel('redmi_note_13');
+  else if (brand === 'poco') onSelectPhoneModel('poco_x6_pro');
+  else if (brand === 'honor') onSelectPhoneModel('honor_90');
+  else if (brand === 'realme') onSelectPhoneModel('realme_12_pro');
+  else if (brand === 'pixel') onSelectPhoneModel('pixel_8_pro');
   else if (brand === 'budget') onSelectPhoneModel('galaxy_a05');
 }
 
@@ -1311,6 +1594,17 @@ function calculate() {
   document.getElementById('val-badge-storage').innerText = `${Math.round(storage)} GB`;
   document.getElementById('val-badge-clock').innerText = `${clock.toFixed(1)} GHz`;
   document.getElementById('val-badge-res').innerText = `${Math.round(res)} px`;
+
+  if (!selectedModelKey) {
+    const nameEl = document.getElementById('ph-active-model-name');
+    if (nameEl) nameEl.innerText = `${ramGb} GB RAM • ${Math.round(storage)} GB Smartfon`;
+    const brandEl = document.getElementById('ph-brand-badge');
+    if (brandEl) brandEl.innerText = "MAXSUS SOZLANMA";
+    const storageEl = document.getElementById('ph-storage-badge');
+    if (storageEl) storageEl.innerText = `${Math.round(storage)} GB`;
+    const dropdown = document.getElementById('select-phone-model');
+    if (dropdown) dropdown.value = "";
+  }
 
   const normBattery = 500 + Math.min(1.0, Math.max(0.0, (battery - 800) / (5000 - 800))) * (1990 - 500);
   const normCam = Math.min(20, Math.max(2, Math.round(cam * 0.3)));
