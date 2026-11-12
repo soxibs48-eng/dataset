@@ -213,6 +213,78 @@ def get_phone_inline_buttons(model_key):
         ]
     }
 
+def get_competitor_comparison(current_key, usd_price, live_rate):
+    """Shu narx toifasidagi boshqa raqobatchi modellarni topish va solishtirish"""
+    candidates = []
+    brand_prefix = ""
+    if current_key and current_key in PHONE_MODELS:
+        brand_prefix = PHONE_MODELS[current_key]['name'].split()[0]
+
+    for k, m in PHONE_MODELS.items():
+        if k != current_key and (not brand_prefix or not m['name'].startswith(brand_prefix)):
+            diff = abs(m['usd_price'] - usd_price)
+            candidates.append((diff, m))
+
+    candidates.sort(key=lambda x: x[0])
+    comps = candidates[:3]
+
+    res = []
+    for diff, c in comps:
+        c_uzs = round(c['usd_price'] * live_rate / 10000) * 10000
+        res.append(f" • <b>{c['name']}:</b> <code>{format_num(c_uzs)} so'm</code> (≈ ${c['usd_price']})")
+    return "\n".join(res)
+
+def get_storage_breakdown(usd_price, base_storage, live_rate):
+    """Turli xotira variantlari bo'yicha narxlar"""
+    step = 40 if usd_price < 250 else (75 if usd_price < 700 else 120)
+    v128_usd = usd_price if base_storage <= 128 else usd_price - step
+    v256_usd = (usd_price + step) if base_storage <= 128 else usd_price
+    v512_usd = v256_usd + round(step * 1.5)
+
+    v128_uzs = round(v128_usd * live_rate / 10000) * 10000
+    v256_uzs = round(v256_usd * live_rate / 10000) * 10000
+    v512_uzs = round(v512_usd * live_rate / 10000) * 10000
+
+    return (
+        f" • <b>128 GB:</b> <code>{format_num(v128_uzs)} so'm</code> (≈ ${v128_usd})\n"
+        f" • <b>256 GB:</b> <code>{format_num(v256_uzs)} so'm</code> (≈ ${v256_usd})\n"
+        f" • <b>512 GB:</b> <code>{format_num(v512_uzs)} so'm</code> (≈ ${v512_usd})"
+    )
+
+def get_condition_breakdown(uzs_price):
+    """Yangi va B/U holatiga ko'ra narxlar"""
+    bu_ideal = round(uzs_price * 0.80 / 10000) * 10000
+    bu_mid = round(uzs_price * 0.68 / 10000) * 10000
+    return (
+        f" • 🆕 <b>Yangi (Pachka/Kafolatli):</b> ~<code>{format_num(uzs_price)} so'm</code>\n"
+        f" • 📦 <b>B/U Ideal (Tirnalmagan):</b> ~<code>{format_num(bu_ideal)} so'm</code>\n"
+        f" • 📱 <b>B/U O'rtacha ishlatilgan:</b> ~<code>{format_num(bu_mid)} so'm</code>"
+    )
+
+def get_expert_analysis(ram_mb, batt_mah, clock_ghz, usd_price):
+    """Oddiy inson tilidagi batafsil AI xulosasi"""
+    if ram_mb >= 3700 and clock_ghz >= 3.0:
+        game = "PUBG Mobile (90-120 FPS), Genshin Impact va montaj maksimal grafikada qotmasdan silliq ishlaydi."
+    elif ram_mb >= 2200:
+        game = "PUBG Mobile (60 FPS), Telegram, Instagram va og'ir ilovalar bemalol ishlaydi."
+    else:
+        game = "Kundalik qo'ng'iroqlar, Telegram, Instagram, YouTube va yengil ilovalar uchun yetarli."
+
+    batt_text = "1.5 - 2 kunga bemalol yetadi (zaryad tashvish bo'lmaydi)." if batt_mah >= 4800 else "1 kunlik to'liq faol ishlatishga yetadi."
+
+    if usd_price >= 800:
+        verdict = "👑 <b>Premium Flagman:</b> Eng sifatli korpus, eng kuchli kamera va uzoq yillik yuqori tezlik kafolatlangan."
+    elif usd_price >= 300:
+        verdict = "⚖️ <b>Narx/Sifat bo'yicha eng kuchli:</b> O'z sinfida raqobatchilaridan ustun va ommabop tanlov."
+    else:
+        verdict = "🪙 <b>Hamyonbop va tejamkor:</b> Ortiqcha xarajat qilmasdan barcha kundalik ishlarni bajarishga qulay."
+
+    return (
+        f"🎮 <b>O'yin va tezlik:</b> {game}\n"
+        f"🔋 <b>Batareya sarfi:</b> {batt_text}\n"
+        f"💡 <b>Xulosa:</b> {verdict}"
+    )
+
 def generate_phone_quote(model_key, live_rate, font_style='bold_sans'):
     """Telefon haqida to'liq hisob-kitob va chiroyli matn yaratish"""
     key_clean = model_key.replace('_', ' ').strip().lower()
@@ -243,21 +315,33 @@ def generate_phone_quote(model_key, live_rate, font_style='bold_sans'):
     msg = f"✨ ━━━━━━━━━━━━━━━━━━━━━━━ ✨\n"
     msg += f"📱 <b>【 {styled_title} 】</b>\n"
     msg += f"✨ ━━━━━━━━━━━━━━━━━━━━━━━ ✨\n\n"
-    msg += f"💰 <b>Bozor narxi:</b> <code>{format_num(uzs_price)} so'm</code> (≈ <b>${usd_price}</b>)\n"
+    msg += f"💰 <b>O'rtacha bozor narxi:</b> <code>{format_num(uzs_price)} so'm</code> (≈ <b>${usd_price}</b>)\n"
     msg += f"📊 <b>Narx oralig'i:</b> {format_num(low_uzs)} — {format_num(high_uzs)} so'm\n"
-    msg += f"🎯 <b>AI Toifasi:</b> {tiers[pred]}\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+    msg += f"🎯 <b>AI Toifasi:</b> {tiers[pred]}\n\n"
+
+    msg += f"📦 <b>Xotirasiga ko'ra hozirgi narxlar:</b>\n"
+    msg += get_storage_breakdown(usd_price, model.get('ichki_xotira_gb', 128), live_rate) + "\n\n"
+
+    msg += f"🏷️ <b>Bozor holatiga ko'ra narxlar:</b>\n"
+    msg += get_condition_breakdown(uzs_price) + "\n\n"
+
+    msg += f"🔄 <b>Shu narxdagi boshqa telefonlar narxi:</b>\n"
+    msg += get_competitor_comparison(model_key, usd_price, live_rate) + "\n\n"
+
     msg += f"💳 <b>Nasiya to'lov rejalari (Muddatli to'lov):</b>\n"
     msg += f" • <b>3 oy:</b> oyiga <code>{format_num(inst_3)}</code> so'mdan\n"
     msg += f" • <b>6 oy:</b> oyiga <code>{format_num(inst_6)}</code> so'mdan\n"
-    msg += f" • <b>12 oy:</b> oyiga <code>{format_num(inst_12)}</code> so'mdan\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"⚡ <b>Texnik parametrlari:</b>\n"
-    msg += f" • <b>Operativ xotira (RAM):</b> {model['ram_mb']} MB (~{(model['ram_mb']/1024):.1f} GB)\n"
-    msg += f" • <b>Akkumulyator hajmi:</b> {model['akkumulyator_quvvati']} mAh\n"
+    msg += f" • <b>12 oy:</b> oyiga <code>{format_num(inst_12)}</code> so'mdan\n\n"
+
+    msg += f"⚡ <b>Texnik ko'rsatkichlari:</b>\n"
+    msg += f" • <b>RAM:</b> {model['ram_mb']} MB (~{(model['ram_mb']/1024):.1f} GB)\n"
+    msg += f" • <b>Batareya:</b> {model['akkumulyator_quvvati']} mAh\n"
     msg += f" • <b>Asosiy kamera:</b> {model['asosiy_kamera_mp']} MP\n"
-    msg += f" • <b>Doimiy ichki xotira:</b> {model['ichki_xotira_gb']} GB\n"
-    msg += f" • <b>Protsessor chastotasi:</b> {model['protsessor_tezligi']} GHz\n"
+    msg += f" • <b>Doimiy xotira:</b> {model['ichki_xotira_gb']} GB\n"
+    msg += f" • <b>Protsessor:</b> {model['protsessor_tezligi']} GHz\n\n"
+
+    msg += f"📋 <b>Ekspert tahlili:</b>\n"
+    msg += get_expert_analysis(model['ram_mb'], model['akkumulyator_quvvati'], model['protsessor_tezligi'], usd_price) + "\n"
     msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     msg += f"🏛️ <i>Markaziy Bank kursi: 1 USD = {format_num(round(live_rate, 2))} UZS</i>"
     return msg
@@ -282,6 +366,8 @@ def predict_custom_specs(ram_gb, battery_mah, cam_mp, storage_gb, live_rate, fon
     low_uzs = price['low_uzs']
     high_uzs = price['high_uzs']
     inst_12 = price['inst_12']
+    inst_3 = round(uzs * 1.06 / 3 / 1000) * 1000
+    inst_6 = round(uzs * 1.10 / 6 / 1000) * 1000
 
     tiers = [
       "🟢 Hamyonbop (0-toifa)",
@@ -294,15 +380,29 @@ def predict_custom_specs(ram_gb, battery_mah, cam_mp, storage_gb, live_rate, fon
 
     msg = f"🔮 <b>【 {custom_title} 】</b>\n"
     msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-    msg += f"• <b>RAM:</b> {ram_gb} GB\n"
-    msg += f"• <b>Batareya:</b> {battery_mah} mAh\n"
-    msg += f"• <b>Kamera:</b> {cam_mp} MP\n"
-    msg += f"• <b>Xotira:</b> {storage_gb} GB\n"
-    msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     msg += f"💰 <b>Taxminiy bozor narxi:</b> <code>{format_num(uzs)} so'm</code> (≈ <b>${usd}</b>)\n"
     msg += f"📊 <b>Narx oralig'i:</b> {format_num(low_uzs)} — {format_num(high_uzs)} so'm\n"
-    msg += f"🎯 <b>AI Toifasi:</b> {tiers[pred]}\n"
-    msg += f"💳 <b>12 oylik nasiya:</b> oyiga ~{format_num(inst_12)} so'mdan\n"
+    msg += f"🎯 <b>AI Toifasi:</b> {tiers[pred]}\n\n"
+
+    msg += f"🏷️ <b>Bozor holatiga ko'ra narxlar:</b>\n"
+    msg += get_condition_breakdown(uzs) + "\n\n"
+
+    msg += f"🔄 <b>Shu narxdagi boshqa telefonlar narxi:</b>\n"
+    msg += get_competitor_comparison(None, usd, live_rate) + "\n\n"
+
+    msg += f"💳 <b>Nasiya to'lov rejalari (Muddatli to'lov):</b>\n"
+    msg += f" • <b>3 oy:</b> oyiga <code>{format_num(inst_3)}</code> so'mdan\n"
+    msg += f" • <b>6 oy:</b> oyiga <code>{format_num(inst_6)}</code> so'mdan\n"
+    msg += f" • <b>12 oy:</b> oyiga <code>{format_num(inst_12)}</code> so'mdan\n\n"
+
+    msg += f"⚡ <b>Siz kiritgan parametrlar:</b>\n"
+    msg += f" • <b>RAM:</b> {ram_gb} GB\n"
+    msg += f" • <b>Batareya:</b> {battery_mah} mAh\n"
+    msg += f" • <b>Kamera:</b> {cam_mp} MP\n"
+    msg += f" • <b>Xotira:</b> {storage_gb} GB\n\n"
+
+    msg += f"📋 <b>Ekspert tahlili:</b>\n"
+    msg += get_expert_analysis(ram_mb, battery_mah, 2.4, usd) + "\n"
     msg += f"━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     msg += f"🟢 <i>Markaziy Bank kursi: 1 USD = {format_num(round(live_rate, 2))} UZS</i>"
     return msg
