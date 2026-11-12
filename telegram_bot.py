@@ -102,7 +102,11 @@ def get_main_keyboard():
             [{'text': '🟠 Xiaomi & Redmi (12)'}, {'text': '🚀 POCO (6)'}],
             [{'text': '🟡 Honor & Realme (13)'}, {'text': '🟢 Pixel & Boshqalar (7)'}],
             [{'text': '🎨 Yozuv turini tanlash'}, {'text': '⚙️ O\'z parametrlaringiz'}],
-            [{'text': '💵 Jonli Dollar Kursi'}, {'text': '🌐 Web Saytni Ochish'}, {'text': 'ℹ️ Bot haqida'}]
+            [
+                {'text': '🌐 Saytni Ochish (Mini App)', 'web_app': {'url': WEB_APP_URL}},
+                {'text': '💵 Jonli Dollar Kursi'}
+            ],
+            [{'text': '🌐 Sayt Havolasi (Brauzer)'}, {'text': 'ℹ️ Bot haqida'}]
         ],
         'resize_keyboard': True
     }
@@ -195,10 +199,13 @@ def get_font_selection_keyboard():
     }
 
 def get_phone_inline_buttons(model_key):
+    clean_key = model_key.replace(' ', '_').strip().lower()
+    target_url = f"{WEB_APP_URL}?model={clean_key}"
     return {
         'inline_keyboard': [
             [
-                {'text': '🌐 Web saytda to\'liq ko\'rish', 'url': WEB_APP_URL}
+                {'text': '🌐 Saytda ko\'rish (Brauzer)', 'url': target_url},
+                {'text': '📱 Mini Appda ochish', 'web_app': {'url': target_url}}
             ],
             [
                 {'text': '🔄 Boshqa model tanlash', 'callback_data': 'back_to_menu'}
@@ -395,15 +402,33 @@ def main():
                     send_chat_action(chat_id, "typing")
 
                     # Buyruqlar va xabarlar
-                    if lower_text in ['/start', 'start', 'salom', 'assalomu alaykum', '🔙 asosiy menyu']:
+                    if lower_text.startswith('/start'):
+                        # Veb-saytdan chuqur havola (deep linking): masalan /start galaxy_s24_ultra
+                        parts = text.split(maxsplit=1)
+                        if len(parts) > 1 and parts[1].strip():
+                            param = parts[1].strip()
+                            matched = find_best_model_match(param)
+                            if matched:
+                                quote = generate_phone_quote(matched, live_rate, font_style)
+                                send_message(
+                                    chat_id, 
+                                    f"🌐 <b>Veb-saytdan tanlangan model bahosi:</b>\n\n{quote}", 
+                                    get_phone_inline_buttons(matched)
+                                )
+                                continue
+
                         welcome = (
                             f"👋 Assalomu alaykum! <b>SmartPrice AI</b> rasmiy botiga xush kelibsiz! 📱\n\n"
                             f"Bazada <b>65+ ta</b> eng so'nggi va mashhur telefonlar mavjud.\n"
                             f"Men sun'iy intellekt (Scikit-Learn) va Markaziy Bankning jonli kursi asosida "
                             f"telefonlarning <b>haqqoniy bozor narxi</b> va <b>nasiya to'lovlarini</b> hisoblab beraman.\n\n"
+                            f"🔗 <b>Rasmiy Veb-Sayt:</b> {WEB_APP_URL}\n\n"
                             f"👇 <i>Kerakli brendni tanlang yoki telefon nomini yozing:</i>"
                         )
                         send_message(chat_id, welcome, get_main_keyboard())
+
+                    elif lower_text in ['salom', 'assalomu alaykum', '🔙 asosiy menyu']:
+                        send_message(chat_id, "Asosiy menyudasiz. Kerakli brendni tanlang yoki telefon nomini yozing:", get_main_keyboard())
 
                     # Menyu bo'limlari
                     elif 'apple' in lower_text or 'iphone' in lower_text and len(lower_text) < 15:
@@ -466,7 +491,7 @@ def main():
                         send_message(chat_id, c_msg, get_main_keyboard())
 
                     # Web sayt
-                    elif 'web sayt' in lower_text or 'sayt' in lower_text or 'saytni ochish' in lower_text:
+                    elif 'web sayt' in lower_text or 'sayt' in lower_text or 'saytni ochish' in lower_text or '/sayt' in lower_text or '/web' in lower_text:
                         web_msg = (
                             f"🌐 <b>SmartPrice AI Veb-Platformasi:</b>\n\n"
                             f"Siz barcha 65+ modellarni interaktiv slayderlar orqali boshqarishingiz, "
@@ -477,7 +502,10 @@ def main():
                         )
                         markup = {
                             'inline_keyboard': [
-                                [{'text': '🚀 Web Saytga O\'tish', 'url': WEB_APP_URL}]
+                                [
+                                    {'text': '🚀 Brauzerda ochish', 'url': WEB_APP_URL},
+                                    {'text': '📱 Mini Appda ochish', 'web_app': {'url': WEB_APP_URL}}
+                                ]
                             ]
                         }
                         send_message(chat_id, web_msg, markup)
